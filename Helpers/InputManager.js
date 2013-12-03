@@ -162,8 +162,10 @@ function InputManager(){
     	alert("ASDF");
     }
 
+    //active object
+    var CurrentObject = null;
     //active object translation handle
-    var ActiveHandle = null;
+    var CurrentHandle = null;
 
     //mouse down
     function onDocumentMouseDown(e){
@@ -220,19 +222,9 @@ function InputManager(){
 
 				//check for intersections on an active handle
 				var HandleIntersections;
-				if(ActiveHandle != null){
-					ActiveHandle.checkClicked(new THREE.Vector3(mouse.x, mouse.y, 0.5));
+				if(CurrentHandle != null){
+					CurrentHandle.checkClicked(new THREE.Vector3(mouse.x, mouse.y, 0.5));
 				}
-				
-
-				//check to see if the ray intersects with our test plane
-				var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
-				var projector = new THREE.Projector();
-				projector.unprojectVector( vector, RTS.Camera );
-				var Ray = new THREE.Ray(RTS.CameraHolder.position, vector.sub(RTS.CameraHolder.position).normalize());
-				var asdf = new THREE.Vector3();
-				Ray.intersectPlane(Plane, asdf);
-				//alert(asdf.x + "\n" + asdf.y + "\n" + asdf.z);
 
 				if(GeometryIntersections.length > 0 && HandleIntersections == null){
 					//we have intersected with an object
@@ -251,8 +243,15 @@ function InputManager(){
 					if(GeometryIntersections[index].object.children.length == 0){
 						var h = new MovementHandle();
 						GeometryIntersections[index].object.add(h.Handle);
-						ActiveHandle = h;
+						CurrentHandle = h;
+						CurrentObject = GeometryIntersections[index].object;
 					}
+				}
+
+				else if(GeometryIntersections.length == 0 && CurrentHandle != null){
+					CurrentObject.remove(CurrentHandle.Handle);
+					CurrentHandle = null;
+					CurrentObject = null;
 				}
     		}
 
@@ -264,8 +263,8 @@ function InputManager(){
     //mouse up
     function onDocumentMouseUp(e){
     	//if a handle is currently clicked, set it to unclicked
-    	if(ActiveHandle != null){
-    		if(ActiveHandle.clicked) ActiveHandle.unClick();
+    	if(CurrentHandle != null){
+    		if(CurrentHandle.clicked) CurrentHandle.unClick();
     	}
     }
 
