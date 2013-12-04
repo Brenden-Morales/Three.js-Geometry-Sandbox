@@ -59,7 +59,7 @@ function UIManager($root){
 
 
     	//window content
-		var $content = $("<div class=\"content\"></div>");
+		var $content = $("<div class=\"MainContent\"></div>");
 		//set content css
 		//$content.css('background-color', '#BDDCD9');
 		$content.css('margin-left', '3px');
@@ -83,7 +83,7 @@ function UIManager($root){
 	//add a plain text info to a window
 	this.addText = function ($UI, text, classSelector){
 		//get the main content div
-		var $mainDiv = classSelector == undefined ? $UI.find(".content") : $UI.find(classSelector);
+		var $mainDiv = classSelector == undefined ? $UI : $UI.find(classSelector);
 		if($mainDiv.length == 0) $mainDiv = $UI;
 		clearDiv($mainDiv);
 
@@ -100,7 +100,7 @@ function UIManager($root){
 	//add a button to a window, with a function callback
 	this.addButton = function ($UI, text, callback, classSelector){
 		//get the main content div
-		var $mainDiv = classSelector == undefined ? $UI.find(".content") : $UI.find(classSelector);
+		var $mainDiv = classSelector == undefined ? $UI : $UI.find(classSelector);
 		if($mainDiv.length == 0) $mainDiv = $UI;
 		clearDiv($mainDiv);
 
@@ -125,7 +125,7 @@ function UIManager($root){
 
 	this.addInput = function($UI, text, start, callback, classSelector){
 		//get the main content div
-		var $mainDiv = classSelector == undefined ? $UI.find(".content") : $UI.find(classSelector);
+		var $mainDiv = classSelector == undefined ? $UI : $UI.find(classSelector);
 		if($mainDiv.length == 0) $mainDiv = $UI;
 		clearDiv($mainDiv);
 
@@ -143,12 +143,15 @@ function UIManager($root){
 		//add them
 		$Content.append($InputDiv);
 		$mainDiv.append($Content);
+
+		//return the input object so we can use it later
+		return $Input;
 	}
 
 	//add a slider to a window with a callback
 	this.addSlider = function ($UI, text, min, max, start, step, callback, classSelector){
 		//get the main content div
-		var $mainDiv = classSelector == undefined ? $UI.find(".content") : $UI.find(classSelector);
+		var $mainDiv = classSelector == undefined ? $UI : $UI.find(classSelector);
 		if($mainDiv.length == 0) $mainDiv = $UI;
 		clearDiv($mainDiv);
 
@@ -235,13 +238,13 @@ function UIManager($root){
 	this.createAccordion = function (){
 		var $Content = $("<div></div>");
 		$Content.css('clear', 'both');
-		$Content.addClass("content");
+		$Content.addClass("MainContent");
 		return $Content;
 	}
 
 	//create an accordion content div
 	this.createAccordionContent = function(){
-		var $Content = $("<div class=\"content\"></div>");
+		var $Content = $("<div class=\"MainContent\"></div>");
 		$Content.css('clear', 'both');
 		$Content.css('padding', '2px');
 		return $Content;
@@ -258,7 +261,7 @@ function UIManager($root){
 		var $mainDiv = $UI;
 		clearDiv($mainDiv);
 		$Accordion.accordion({
-			heightStyle: "content",
+			heightStyle: "MainContent",
 			collapsible: true,
 			active: false
 		});
@@ -384,9 +387,13 @@ function UIManager($root){
 
 	}
 
-	//add a menu to specified UI
-	this.addMenu = function($UI, $Menu){
-		$Menu.menu();
+	//add a menu to specified UI with a callback for handling menu selections
+	this.addMenu = function($UI, $Menu, callback){
+		$Menu.menu({
+			select:function(event, ui) {
+				if(callback != null && callback != undefined) callback(event, ui);
+			}
+		});
 		$UI.append($Menu);
 	}
 

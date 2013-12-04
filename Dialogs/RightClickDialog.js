@@ -1,5 +1,5 @@
 function RightClickDialog(x,y){
-	
+
 	//UI manager
     var UI = new UIManager($("#WindowOverlay"));
 
@@ -26,17 +26,45 @@ function RightClickDialog(x,y){
 	Menu1.add("Create New/Lights/Point");
 	Menu1.add("Create New/Lights/Spot");
 
+	//listening for menu selections
+	function menuListener(event,ui){
+		var $a = $(ui.item)
+		if($a.children().length == 1){
+			//the text of the menu item that we chose
+			var choice = $a.text();
+
+			if(choice == "Plane"){
+				NewPlaneDialog(event.clientX, event.clientY);
+			}
+			else if(choice == "Cube"){
+				NewCubeDialog(event.clientX, event.clientY);
+			}
+			else if(choice == "Cylinder"){
+				NewCylinderDialog(event.clientX, event.clientY);
+			}
+			else if(choice == "Sphere"){
+				NewSphereDialog(event.clientX, event.clientY);
+			}
+
+			$thisWindow.remove();
+		}
+	}
+
 	//add the menu
-	UI.addMenu($thisWindow, $(Menu1.create()));
+	UI.addMenu($thisWindow, $(Menu1.create()), menuListener);
 
 	//create an accordion
 	var $cameraAccordion = UI.createAccordion();
 	var $cameraPosition = UI.createAccordionContent();
 	var $cameraRotation = UI.createAccordionContent();
 	//camera position accordion
-	UI.addInput($cameraPosition, "X", "0");
-	UI.addInput($cameraPosition, "Y", "0");
-	UI.addInput($cameraPosition, "Z", "0");
+	var $XInput = UI.addInput($cameraPosition, "X", "0");
+	var $YInput = UI.addInput($cameraPosition, "Y", "0");
+	var $ZInput = UI.addInput($cameraPosition, "Z", "0");
+	function positionButtonCallback(){
+		//alert($XInput.val() + "\n" + $YInput.val() + "\n" + $ZInput.val());
+	}
+	UI.addButton($cameraPosition, "set camera position", positionButtonCallback)
 	//camera rotation accordion
 	UI.addSlider($cameraRotation, "X", -1 * Math.PI, 1 * Math.PI, 0, 0.01, function(x){
     	RTS.Camera.rotation.x = -x;

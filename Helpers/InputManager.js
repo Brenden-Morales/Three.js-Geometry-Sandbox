@@ -173,6 +173,7 @@ function InputManager(){
     	if(e.button == 2){
 
     		//create a new window and add elements to it
+    		/*
     		var $a = UI.createNew("hello, world!", e.clientX, e.clientY);
     		UI.addText($a, "hoooooraaaay!");
     		UI.addButton($a, "do something", callback);
@@ -197,8 +198,13 @@ function InputManager(){
     		UI.addAccordion($a, $accordion);
 
     		//UI.activate($a);
+    		*/
 
-    		var r = new RightClickDialog(e.clientX, e.clientY);
+    		//create a basic right click dialog if no object is selected
+    		if(CurrentObject == null){
+    			var r = new RightClickDialog(e.clientX, e.clientY);
+    		}
+    		
 
     	}
     	//left click
@@ -221,12 +227,12 @@ function InputManager(){
 				var GeometryIntersections = raycaster.intersectObjects(ActiveObjects);
 
 				//check for intersections on an active handle
-				var HandleIntersections;
+				var HandleClicked = false;
 				if(CurrentHandle != null){
-					CurrentHandle.checkClicked(new THREE.Vector3(mouse.x, mouse.y, 0.5));
+					HandleClicked = CurrentHandle.checkClicked(new THREE.Vector3(mouse.x, mouse.y, 0.5));
 				}
 
-				if(GeometryIntersections.length > 0 && HandleIntersections == null){
+				if(GeometryIntersections.length > 0 && HandleClicked == false){
 					//we have intersected with an object
 
 					//choose the closest intersection
@@ -241,6 +247,14 @@ function InputManager(){
 
 					//if the object has no children, give it a handle, set that handle as our active handle
 					if(GeometryIntersections[index].object.children.length == 0){
+						//if there is an already selected piece of geometry, remove the handle
+						if(CurrentHandle != null){
+							CurrentObject.remove(CurrentHandle.Handle);
+							CurrentHandle = null;
+							CurrentObject = null;
+						}
+						
+						//new handle
 						var h = new MovementHandle();
 						GeometryIntersections[index].object.add(h.Handle);
 						CurrentHandle = h;
@@ -248,7 +262,7 @@ function InputManager(){
 					}
 				}
 
-				else if(GeometryIntersections.length == 0 && CurrentHandle != null){
+				else if(GeometryIntersections.length == 0 && HandleClicked == false){
 					CurrentObject.remove(CurrentHandle.Handle);
 					CurrentHandle = null;
 					CurrentObject = null;

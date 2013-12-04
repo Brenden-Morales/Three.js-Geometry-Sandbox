@@ -38,7 +38,7 @@ function MovementHandle(){
     																									transparent: true}));
     MeshX.name = "X";
     //y
-    var MeshY = new THREE.Mesh(new THREE.LatheGeometry(arrowVertices, 4), new THREE.MeshBasicMaterial({color: 0x00ff00, 
+    var MeshY = new THREE.Mesh(new THREE.LatheGeometry(arrowVertices, 4), new THREE.MeshBasicMaterial({color: 0x00CC00, 
     																									depthTest: false, 
     																									depthWrite: false, 
     																									transparent: true}));
@@ -68,7 +68,11 @@ function MovementHandle(){
 		HandleIntersections = raycaster.intersectObjects(self.Handle.children);
 		if(HandleIntersections.length > 0){
 			self.Click(HandleIntersections[0].object.name, new THREE.Vector3(vector.x, vector.y,0), mouse);
-		} 
+            return true;
+		}
+        else{
+            return false;
+        } 
     }
 
     //set this handle to clicked so it will translate on mouse move

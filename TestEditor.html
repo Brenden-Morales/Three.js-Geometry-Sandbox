@@ -41,8 +41,12 @@
     <script src="Helpers/InputManager.js"></script>
     <script src="Helpers/RTSCamera.js"></script>
     <script src="Helpers/ObjectGrid.js"></script>
-    <script src="Helpers/RightClickDialog.js"></script>
     <script src="Helpers/MovementHandle.js"></script>
+    <script src="Dialogs/RightClickDialog.js"></script>
+    <script src="Dialogs/NewPlaneDialog.js"></script>
+    <script src="Dialogs/NewCubeDialog.js"></script>
+    <script src="Dialogs/NewCylinderDialog.js"></script>
+    <script src="Dialogs/NewSphereDialog.js"></script>
 
     <!--div for popups and whatnot-->
     <div id="WindowOverlay"></div>
@@ -86,23 +90,12 @@
         Grid = new ObjectGrid(scene);
 
         //make a cube
-        var mat =  new THREE.MeshBasicMaterial( { color: 0xffaa00, wireframe: true } );
-        var mesh = new THREE.Mesh( new THREE.CubeGeometry( 100, 100, 100, 4, 4, 4 ), mat );
-        mesh.position.set( 0, 75, 0 );
-        scene.add( mesh );
-        ActiveObjects.push(mesh);
-
-        //make a handle
-        //var h = new MovementHandle();
-        //scene.add(h.Handle);
-
-        //create a test plane
-        Plane = new THREE.Plane();
-        Plane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0,0,1), new THREE.Vector3(0,0,0));
-
-
+        //var mat =  new THREE.MeshBasicMaterial( { color: 0xffaa00, wireframe: true } );
+        //var mesh = new THREE.Mesh( new THREE.CubeGeometry( 100, 100, 100, 4, 4, 4 ), mat );
+        //mesh.position.set( 0, 75, 0 );
+        //scene.add( mesh );
+        //ActiveObjects.push(mesh);
         
-
         //set initial camera position
         scene.add(RTS.CameraHolder);
         RTS.CameraHolder.position.z = 200;
@@ -125,8 +118,8 @@
 
 
     function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
+        RTS.Camera.aspect = window.innerWidth / window.innerHeight;
+        RTS.Camera.updateProjectionMatrix();
         renderer.setSize( window.innerWidth, window.innerHeight );
 
     }
