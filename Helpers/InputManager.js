@@ -18,6 +18,8 @@ function InputManager(){
 	Keys[39] = "right arrow";
 	Keys[40] = "down arrow";
 
+	Keys[46] = "delete";
+
 	Keys[48] = "0";
 	Keys[49] = "1";
 	Keys[50] = "2";
@@ -124,6 +126,20 @@ function InputManager(){
 
 	function onDocumentKeyDown( event ) {
 		KeyStatus[event.keyCode] = true;
+
+		//if this is the delete key, we delete the current object
+
+		if(CurrentObject != null && event.keyCode == 46){
+			for(var i = 0; i < ActiveObjects.length; i ++){
+				if(ActiveObjects[i] == CurrentObject){
+					ActiveObjects.splice(i,1);
+					CurrentObject.remove(CurrentHandle.Handle);
+					CurrentHandle = null;
+					scene.remove(CurrentObject);
+					CurrentObject = null;
+				}
+			}
+		}
     }
 
     function onDocumentKeyUp( event ) {
@@ -262,7 +278,7 @@ function InputManager(){
 					}
 				}
 
-				else if(GeometryIntersections.length == 0 && HandleClicked == false){
+				else if(GeometryIntersections.length == 0 && HandleClicked == false && CurrentObject != null){
 					CurrentObject.remove(CurrentHandle.Handle);
 					CurrentHandle = null;
 					CurrentObject = null;
