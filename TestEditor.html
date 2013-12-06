@@ -42,6 +42,7 @@
     <script src="Helpers/RTSCamera.js"></script>
     <script src="Helpers/ObjectGrid.js"></script>
     <script src="Helpers/MovementHandle.js"></script>
+    <script src="Helpers/RotationHandle.js"></script>
     <script src="Dialogs/RightClickDialog.js"></script>
     <script src="Dialogs/NewPlaneDialog.js"></script>
     <script src="Dialogs/NewCubeDialog.js"></script>
@@ -93,6 +94,15 @@
         scene.add(RTS.CameraHolder);
         RTS.CameraHolder.position.z = 200;
         RTS.CameraHolder.position.y = 75;
+
+        //add a test light
+        var light = new THREE.AmbientLight( 0x404040 ); // soft white light 
+        scene.add( light );
+
+        //nother test light
+        var light1 = new THREE.PointLight( 0xffffff, 1, 100 ); 
+        light1.position.set( 50, 50, 50 ); 
+        scene.add( light1 );
     }
     
 

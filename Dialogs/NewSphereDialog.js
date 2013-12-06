@@ -28,7 +28,7 @@ function NewSphereDialog(x,y){
 	UI.addAccordion($thisWindow, $sphereAccordion);
 
 	//the create button
-	function createCylinderCallback(){
+	function createSphereCallback(){
 		var radius = $Radius.val();
 		var widthSegments = $WidthSegments.val();
 		var heightSegments = $HeightSegments.val();
@@ -49,7 +49,7 @@ function NewSphereDialog(x,y){
         //remove dialog
         $thisWindow.remove();
 	}
-	UI.addButton($thisWindow, "Create Sphere", createCylinderCallback);
+	UI.addButton($thisWindow, "Create Sphere", createSphereCallback);
 
 
 	//activate window

@@ -140,6 +140,21 @@ function InputManager(){
 				}
 			}
 		}
+
+		//switch to a rotation handle
+		if(CurrentHandle != null && CurrentObject != null && event.keyCode == 82){
+			if(CurrentHandle.type == "Movement"){
+				CurrentObject.remove(CurrentHandle.Handle);
+				CurrentHandle = new RotationHandle();
+				CurrentObject.add(CurrentHandle.Handle);
+			}
+			else if(CurrentHandle.type == "Rotation"){
+				CurrentObject.remove(CurrentHandle.Handle);
+				CurrentHandle = new MovementHandle();
+				CurrentObject.add(CurrentHandle.Handle);
+			}
+			
+		}
     }
 
     function onDocumentKeyUp( event ) {
