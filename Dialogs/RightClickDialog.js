@@ -18,8 +18,7 @@ function RightClickDialog(x,y){
 	Menu1.add("Create New/Geometry/Cylinder");
 	Menu1.add("Create New/Geometry/Sphere");
 
-	Menu1.add("Create New/Lights/Basic", 80);
-	Menu1.add("Create New/Lights/Ambient");
+	Menu1.add("Create New/Lights/Ambient", 80);
 	Menu1.add("Create New/Lights/Area");
 	Menu1.add("Create New/Lights/Directional");
 	Menu1.add("Create New/Lights/Hemisphere");
@@ -44,6 +43,12 @@ function RightClickDialog(x,y){
 			}
 			else if(choice == "Sphere"){
 				NewSphereDialog(event.clientX, event.clientY);
+			}
+			else if(choice == "Spot"){
+				NewSpotlightDialog(event.clientX, event.clientY);
+			}
+			else if(choice == "Point"){
+				NewPointlightDialog(event.clientX, event.clientY);
 			}
 
 			$thisWindow.remove();

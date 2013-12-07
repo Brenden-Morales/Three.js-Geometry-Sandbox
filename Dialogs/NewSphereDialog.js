@@ -37,9 +37,11 @@ function NewSphereDialog(x,y){
 		var thetaStart = $ThetaStart.val();
 		var thetaLength = $ThetaLength.val();
 
-		//make the plane
-        var mat =  new THREE.MeshBasicMaterial( { color: 0xffaa00} );
+		//make the sphere
+        var mat =  new THREE.MeshLambertMaterial( { color: 0xffaa00, ambient: 0xffaa00} );
         var mesh = new THREE.Mesh( new THREE.SphereGeometry(radius, widthSegments, heightSegments, phiStart, phiLength, thetaStart, thetaLength), mat );
+        mesh.castShadow = true;
+        //mesh.receiveShadow = true;
 
         //add it to scene and active objects list
         mesh.position.set( 0, 0, 0 );

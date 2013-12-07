@@ -34,8 +34,10 @@ function NewPlaneDialog(x,y){
 		var heightSegments = $HeightSegments.val();
 
 		//make the plane
-        var mat =  new THREE.MeshBasicMaterial( { color: 0xffaa00, side:THREE.DoubleSide} );
+        var mat =  new THREE.MeshLambertMaterial( { color: 0xffaa00, ambient: 0xffaa00} );
         var mesh = new THREE.Mesh( new THREE.PlaneGeometry( width, height, widthSegments, heightSegments), mat );
+        //mesh.castShadow = true;
+        mesh.receiveShadow = true;
 
         //add it to scene and active objects list
         mesh.position.set( 0, 0, 0 );

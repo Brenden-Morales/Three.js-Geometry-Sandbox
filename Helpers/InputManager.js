@@ -141,7 +141,7 @@ function InputManager(){
 			}
 		}
 
-		//switch to a rotation handle
+		//switch handle types with "r"
 		if(CurrentHandle != null && CurrentObject != null && event.keyCode == 82){
 			if(CurrentHandle.type == "Movement"){
 				CurrentObject.remove(CurrentHandle.Handle);
@@ -152,9 +152,33 @@ function InputManager(){
 				CurrentObject.remove(CurrentHandle.Handle);
 				CurrentHandle = new MovementHandle();
 				CurrentObject.add(CurrentHandle.Handle);
+				CurrentHandle.negateRotation();
 			}
 			
 		}
+
+		//zero out position or rotation with "0"
+		if(CurrentHandle != null && CurrentObject != null && event.keyCode == 48){
+			if(CurrentHandle.type == "Movement"){
+				CurrentObject.position.set(0,0,0);
+			}
+			else if(CurrentHandle.type == "Rotation"){
+				CurrentObject.rotation.set(0,0,0);
+			}
+			
+		}
+
+		//remove visualization helpers with "h"
+		if(CurrentHandle != null && CurrentObject != null && event.keyCode == 72){
+			for(var i = 0; i < CurrentObject.children.length; i ++){
+				if(CurrentObject.children[i].name == "Visualizer"){
+					if(CurrentObject.children[i].visible) CurrentObject.children[i].visible = false;
+					else CurrentObject.children[i].visible = true;
+				}
+			}
+		}
+
+
     }
 
     function onDocumentKeyUp( event ) {
@@ -202,41 +226,10 @@ function InputManager(){
     function onDocumentMouseDown(e){
     	//right click
     	if(e.button == 2){
-
-    		//create a new window and add elements to it
-    		/*
-    		var $a = UI.createNew("hello, world!", e.clientX, e.clientY);
-    		UI.addText($a, "hoooooraaaay!");
-    		UI.addButton($a, "do something", callback);
-    		UI.addSlider($a, "variable", -1, 1, 0, 0.01);
-    		UI.addInput($a, "X", "0");
-    		//UI.addText($a, "hoooooraaaay!");
-
-    		//create an accordion
-    		var $accordion = UI.createAccordion();
-    		var $accordionElement = UI.createAccordionContent();
-    		var $accordionElement2 = UI.createAccordionContent();
-    		var $accordionElement3 = UI.createAccordionContent();
-
-    		UI.addButton($accordionElement,"test", callback);
-    		UI.addText($accordionElement2,"test");
-    		UI.addSlider($accordionElement3, "variable", -1, 1, 0, 0.01);
-
-
-    		UI.addAccordionContent($accordion, $accordionElement, "woot");
-    		UI.addAccordionContent($accordion, $accordionElement2, "asdf");
-    		UI.addAccordionContent($accordion, $accordionElement3, "qwerty");
-    		UI.addAccordion($a, $accordion);
-
-    		//UI.activate($a);
-    		*/
-
     		//create a basic right click dialog if no object is selected
     		if(CurrentObject == null){
     			var r = new RightClickDialog(e.clientX, e.clientY);
     		}
-    		
-
     	}
     	//left click
     	else if (e.button == 0){
@@ -276,8 +269,14 @@ function InputManager(){
 						}
 					}
 
+					//check to see if the object already has a handle attached
+					var HandleAttached = false;
+					for(var i = 0; i < GeometryIntersections[index].object.children.length; i ++){
+						if(GeometryIntersections[index].object.children[i].name == "Handle") HandleAttached = true;
+					}
+
 					//if the object has no children, give it a handle, set that handle as our active handle
-					if(GeometryIntersections[index].object.children.length == 0){
+					if(!HandleAttached){
 						//if there is an already selected piece of geometry, remove the handle
 						if(CurrentHandle != null){
 							CurrentObject.remove(CurrentHandle.Handle);
@@ -289,6 +288,7 @@ function InputManager(){
 						var h = new MovementHandle();
 						GeometryIntersections[index].object.add(h.Handle);
 						CurrentHandle = h;
+						CurrentHandle.negateRotation();
 						CurrentObject = GeometryIntersections[index].object;
 					}
 				}

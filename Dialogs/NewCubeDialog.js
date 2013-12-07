@@ -35,9 +35,11 @@ function NewCubeDialog(x,y){
 		var heightSegments = $HeightSegments.val();
 		var depthSegments = $DepthSegments.val();
 
-		//make the plane
+		//make the cube
         var mat =  new THREE.MeshLambertMaterial( { color: 0xffaa00, ambient: 0xffaa00} );
         var mesh = new THREE.Mesh( new THREE.CubeGeometry(width, height, depth, widthSegments, heightSegments, depthSegments), mat );
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
 
         //add it to scene and active objects list
         mesh.position.set( 0, 0, 0 );

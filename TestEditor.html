@@ -48,6 +48,8 @@
     <script src="Dialogs/NewCubeDialog.js"></script>
     <script src="Dialogs/NewCylinderDialog.js"></script>
     <script src="Dialogs/NewSphereDialog.js"></script>
+    <script src="Dialogs/NewPointlightDialog.js"></script>
+    <script src="Dialogs/NewSpotlightDialog.js"></script>
 
     <!--div for popups and whatnot-->
     <div id="WindowOverlay"></div>
@@ -77,6 +79,9 @@
         //selecting a renderer to use
         renderer = new THREE.WebGLRenderer();
         renderer.sortObjects = false;
+        renderer.shadowMapEnabled = true;
+        renderer.shadowMapSoft = true;
+
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
@@ -100,9 +105,9 @@
         scene.add( light );
 
         //nother test light
-        var light1 = new THREE.PointLight( 0xffffff, 1, 100 ); 
-        light1.position.set( 50, 50, 50 ); 
-        scene.add( light1 );
+        //var light1 = new THREE.PointLight( 0xffffff, 1, 100 ); 
+        //light1.position.set( 50, 50, 50 ); 
+        //scene.add( light1 );
     }
     
 

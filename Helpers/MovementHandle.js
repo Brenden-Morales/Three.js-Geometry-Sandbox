@@ -12,8 +12,18 @@ function MovementHandle(){
 	this.lastPosition = new THREE.Vector3(0,0,0);
 
     this.type = "Movement";
+    this.Handle.name = "Handle";
 
 	var self = this;
+
+    //zero out parents rotation
+    this.negateRotation = function(){
+        var parentRotation = new THREE.Matrix4();
+        parentRotation.extractRotation(self.Handle.parent.matrix);
+        var RotationMatrix = new THREE.Matrix4();
+        RotationMatrix.getInverse(parentRotation);
+        this.Handle.applyMatrix(RotationMatrix);
+    }
 
 	//arrows
     var arrowVertices = [];

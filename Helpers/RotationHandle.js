@@ -9,9 +9,10 @@ function RotationHandle(){
 	//the plane that corresponds to the active axis
 	this.activePlane = new THREE.Plane();
 	//last click location
-	this.lastPosition = new THREE.Vector3(0,0,0);
+	this.lastTheta = 0;
 
 	this.type = "Rotation";
+    this.Handle.name = "Handle";
 
 	var self = this;
 
@@ -30,7 +31,7 @@ function RotationHandle(){
     	extrudeSettings.extrudePath = circleSpline;
 
     	//make tube geometry
-	    var axis = new THREE.TubeGeometry(extrudeSettings.extrudePath, 64, 0.25, 8, true, false);
+	    var axis = new THREE.TubeGeometry(extrudeSettings.extrudePath, 64, 0.75, 8, true, false);
 	    var axisMaterial =  new THREE.MeshBasicMaterial( { color: 0xff0000, depthTest: false, depthWrite: false, transparent: true} );
 	    if(facing == "y"){
 	    	axisMaterial =  new THREE.MeshBasicMaterial( { color: 0x00CC00, depthTest: false, depthWrite: false, transparent: true} );
@@ -76,27 +77,60 @@ function RotationHandle(){
 
     	//set up proper plane
     	if(self.activeAxis == "Z"){
-       		self.activePlane.setFromNormalAndCoplanarPoint(new THREE.Vector3(1,0,0), self.Handle.parent.position);
-       		//check initial plane location
-       		self.lastPosition = checkPlane(mouse);
+       		self.activePlane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0,0,1), self.Handle.parent.position);
+
+       		//rotate plane from parent
+        	var RotationMatrix = new THREE.Matrix4();
+        	RotationMatrix.extractRotation(self.Handle.parent.matrix);
+        	activePlane.applyMatrix4(RotationMatrix);
+
+       		//check initial plane / angle
+       		var newPosition = checkPlane(mouse);
+    		//set the position relative to the parents origin
+    		newPosition.x -= self.Handle.parent.position.x;
+    		newPosition.y -= self.Handle.parent.position.y;
+    		newPosition.z -= self.Handle.parent.position.z;
+    		self.lastTheta = CalcAngle(newPosition.x,newPosition.y);
     	}
        	else if(self.activeAxis == "X"){
-       		self.activePlane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0,0,1), self.Handle.parent.position);
-       		//check initial plane location
-       		self.lastPosition = checkPlane(mouse);
+       		self.activePlane.setFromNormalAndCoplanarPoint(new THREE.Vector3(1,0,0), self.Handle.parent.position);
+
+       		//rotate plane from parent
+        	var RotationMatrix = new THREE.Matrix4();
+        	RotationMatrix.extractRotation(self.Handle.parent.matrix);
+        	activePlane.applyMatrix4(RotationMatrix);
+
+       		//check initial plane / angle
+       		var newPosition = checkPlane(mouse);
+    		//set the position relative to the parents origin
+    		newPosition.x -= self.Handle.parent.position.x;
+    		newPosition.y -= self.Handle.parent.position.y;
+    		newPosition.z -= self.Handle.parent.position.z;
+    		self.lastTheta = CalcAngle(newPosition.z,newPosition.y);
+
        	}
        	else if(self.activeAxis == "Y"){
        		self.activePlane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0,1,0), self.Handle.parent.position);
-       		//check initial plane location
-       		self.lastPosition = checkPlane(mouse);
 
+       		//rotate plane from parent
+        	var RotationMatrix = new THREE.Matrix4();
+        	RotationMatrix.extractRotation(self.Handle.parent.matrix);
+        	activePlane.applyMatrix4(RotationMatrix);
+
+       		//check initial plane / angle
+       		var newPosition = checkPlane(mouse);
+    		//set the position relative to the parents origin
+    		newPosition.x -= self.Handle.parent.position.x;
+    		newPosition.y -= self.Handle.parent.position.y;
+    		newPosition.z -= self.Handle.parent.position.z;
+    		self.lastTheta = CalcAngle(newPosition.x,newPosition.z);
        	}
     }
 
     this.unClick = function(){
     	self.clicked = false;
     	self.activeAxis = "";
-    	self.lastPosition = new THREE.Vector3();
+    	self.lastTheta = 0;
     }
 
     function checkPlane(mouse){
@@ -105,11 +139,48 @@ function RotationHandle(){
 		var projector = new THREE.Projector();
 		projector.unprojectVector( vector, RTS.Camera );
 		var Ray = new THREE.Ray(RTS.CameraHolder.position, vector.sub(RTS.CameraHolder.position).normalize());
-		var asdf = new THREE.Vector3();
-		Ray.intersectPlane(self.activePlane, asdf);
+		var intersection = new THREE.Vector3();
+		Ray.intersectPlane(self.activePlane, intersection);
 
-		return asdf;
+		//the active plane is potentially all kittywumpus and whatnot, 
+		//so we have to rotate it properly
+		var RotationMatrix = new THREE.Matrix4();
+		RotationMatrix.extractRotation(self.Handle.matrix);
+		var InverseMatrix = new THREE.Matrix4();
+		InverseMatrix.getInverse(RotationMatrix);
+		var newIntersection = new THREE.Vector3();
+		newIntersection.copy(intersection);
+
+		//rotate the intersection point
+		intersection.applyMatrix4(InverseMatrix);
+
+		return intersection;
     }
+
+    //get the radians from 0 degrees an (x,y) coordinate is
+    function CalcAngle (x, y){
+    	var theta = Math.atan(y/x)*360/2/Math.PI;
+		if (x >= 0 && y >= 0) {
+			theta = theta;
+		} else if (x < 0 && y >= 0) {
+			theta = 180 + theta;
+		} else if (x < 0 && y < 0) {
+			theta = 180 + theta;
+		} else if (x > 0 && y < 0) {
+			theta = 360 + theta;
+		} 
+		return theta;
+    }
+
+    //calculate angle distance between last theta and a given theta
+    function CalcAngleDifference(theta){
+    	var raw_diff = self.lastTheta > theta ? self.lastTheta - theta : theta - self.lastTheta;
+    	if(raw_diff > 180) raw_diff = 360 - raw_diff;
+
+    	if(self.lastTheta > theta) raw_diff *= -1;
+    	return raw_diff;
+    }
+
 
     //when a handle is clicked, keep track of mouse movement
     function onMouseMove(event){
@@ -123,31 +194,47 @@ function RotationHandle(){
 
     		//check the plane
     		var newPosition = checkPlane(mouse);
+    		//set the position relative to the parents origin
+    		newPosition.x -= self.Handle.parent.position.x;
+    		newPosition.y -= self.Handle.parent.position.y;
+    		newPosition.z -= self.Handle.parent.position.z;
 
     		//move based on difference
     		if(self.activeAxis == "Z"){
-    			var zDelta = newPosition.z;
-    			zDelta -= self.lastPosition.z;
-    			//move by delta
-    			self.Handle.parent.position.z += zDelta;
-    			//set last mouse position
-    			self.lastPosition.copy(newPosition);
+    			//Y and X Axis will determine our angle of rotation
+    			//console.log("X:" + newPosition.x + " Y:" + newPosition.y);
+    			var theta = CalcAngle(newPosition.x,newPosition.y);
+    			var diff = CalcAngleDifference(theta);
+    			
+    			//do the rotation
+    			if(!isNaN(diff))self.Handle.parent.rotateOnAxis(new THREE.Vector3(0,0,1), diff * (Math.PI / 180));
+
+    			self.lastTheta = theta;
+    			console.log(diff);
     		}
     		else if(self.activeAxis == "X"){
-    			var xDelta = newPosition.x;
-    			xDelta -= self.lastPosition.x;
-    			//move by delta
-    			self.Handle.parent.position.x += xDelta;
-    			//set last mouse position
-    			self.lastPosition.copy(newPosition);
+    			// Y and Z axis will determine our angle of rotation
+    			//console.log("Z:" + newPosition.z + " Y:" + newPosition.y);
+    			var theta = CalcAngle(newPosition.z,newPosition.y);
+    			var diff = CalcAngleDifference(theta);
+
+    			//do the rotation
+    			if(!isNaN(diff))self.Handle.parent.rotateOnAxis(new THREE.Vector3(1,0,0), -diff * (Math.PI / 180));
+
+    			self.lastTheta = theta;
+    			console.log(diff);
     		}
     		else if(self.activeAxis == "Y"){
-    			var yDelta = newPosition.y;
-    			yDelta -= self.lastPosition.y;
-    			//move by delta
-    			self.Handle.parent.position.y += yDelta;
-    			//set last mouse position
-    			self.lastPosition.copy(newPosition);
+    			//X and Z axis will determine our angle of rotation
+    			//console.log("X:" + newPosition.x + " Z:" + newPosition.z);
+    			var theta = CalcAngle(newPosition.x,newPosition.z);
+    			var diff = CalcAngleDifference(theta);
+    			
+    			//do the rotation
+    			if(!isNaN(diff))self.Handle.parent.rotateOnAxis(new THREE.Vector3(0,1,0), -diff * (Math.PI / 180));
+    			
+    			self.lastTheta = theta;
+    			console.log(diff);
     		}
 
     	}

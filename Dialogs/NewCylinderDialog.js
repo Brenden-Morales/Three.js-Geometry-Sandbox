@@ -33,9 +33,11 @@ function NewCylinderDialog(x,y){
 		var radiusSegments = $RadiusSegments.val();
 		var heightSegments = $HeightSegments.val();
 
-		//make the plane
-        var mat =  new THREE.MeshBasicMaterial( { color: 0xffaa00} );
+		//make the cylinder
+        var mat =  new THREE.MeshLambertMaterial( { color: 0xffaa00, ambient: 0xffaa00} );
         var mesh = new THREE.Mesh( new THREE.CylinderGeometry(radiusTop, radiusBottom, height, radiusSegments, heightSegments, false), mat );
+        mesh.castShadow = true;
+        //mesh.receiveShadow = true;
 
         //add it to scene and active objects list
         mesh.position.set( 0, 0, 0 );
