@@ -3,7 +3,7 @@ function NewPointlightDialog(x,y){
     var UI = new UIManager($("#WindowOverlay"));
 
 	//the UI window attached to this right click
-	var $thisWindow = UI.createNew("New Spotlight", x, y);
+	var $thisWindow = UI.createNew("New Pointlight", x, y);
 
 	//create an accordion
 	var $pointlightAccordion = UI.createAccordion();
@@ -26,8 +26,8 @@ function NewPointlightDialog(x,y){
 	//the create button
 	function createPointlightCallback(){
 		var hex = parseInt($Hex.val());
-		var intensity = $Intensity.val();
-		var distance = $Distance.val();
+		var intensity = parseFloat($Intensity.val());
+		var distance = parseFloat($Distance.val());
 
 		//make the pointlight
         light = new THREE.PointLight(hex, intensity, distance);

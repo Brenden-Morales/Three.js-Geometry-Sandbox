@@ -28,21 +28,20 @@ function NewPlaneDialog(x,y){
 
 	//the create button
 	function createPlaneCallback(){
-		var width = $Width.val();
-		var height = $Height.val();
-		var widthSegments = $WidthSegments.val();
-		var heightSegments = $HeightSegments.val();
+		var width = parseInt($Width.val());
+		var height = parseInt($Height.val());
+		var widthSegments = parseInt($WidthSegments.val());
+		var heightSegments = parseInt($HeightSegments.val());
 
 		//make the plane
-        var mat =  new THREE.MeshLambertMaterial( { color: 0xffaa00, ambient: 0xffaa00} );
+        var mat =  new THREE.MeshBasicMaterial( { color: 0xffaa00} );
         var mesh = new THREE.Mesh( new THREE.PlaneGeometry( width, height, widthSegments, heightSegments), mat );
-        //mesh.castShadow = true;
-        mesh.receiveShadow = true;
 
         //add it to scene and active objects list
         mesh.position.set( 0, 0, 0 );
         scene.add( mesh );
         ActiveObjects.push(mesh);
+        mesh.geometry.verticesNeedUpdate = true;
 
         //remove dialog
         $thisWindow.remove();

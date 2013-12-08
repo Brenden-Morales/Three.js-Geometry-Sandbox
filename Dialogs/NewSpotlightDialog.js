@@ -28,10 +28,10 @@ function NewSpotlightDialog(x,y){
 	//the create button
 	function createSpotlightCallback(){
 		var hex = parseInt($Hex.val());
-		var intensity = $Intensity.val();
-		var distance = $Distance.val();
-		var angle = $Angle.val();
-		var exponent = $Exponent.val();
+		var intensity = parseFloat($Intensity.val());
+		var distance = parseFloat($Distance.val());
+		var angle = parseFloat($Angle.val());
+		var exponent = parseFloat($Exponent.val());
 
 		//make the spotlight
         var light = new THREE.SpotLight(hex, intensity, distance, angle, exponent);

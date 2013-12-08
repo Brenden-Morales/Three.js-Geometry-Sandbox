@@ -8,7 +8,7 @@ function RTSCamera(Input){
 	this.CameraHolder = new THREE.Object3D();
 	
 	//this we use to rotate around the x axis
-	this.Camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+	this.Camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 5000);
 	this.Camera.rotationAutoUpdate = true;
 
 	//so we can rotate independently about the x axis without breaking movement in a planar sense

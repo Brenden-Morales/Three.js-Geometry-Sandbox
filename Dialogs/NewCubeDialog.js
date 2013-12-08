@@ -28,18 +28,16 @@ function NewCubeDialog(x,y){
 
 	//the create button
 	function createCubeCallback(){
-		var width = $Width.val();
-		var height = $Height.val();
-		var depth = $Depth.val();
-		var widthSegments = $WidthSegments.val();
-		var heightSegments = $HeightSegments.val();
-		var depthSegments = $DepthSegments.val();
+		var width = parseInt($Width.val());
+		var height = parseInt($Height.val());
+		var depth = parseInt($Depth.val());
+		var widthSegments = parseInt($WidthSegments.val());
+		var heightSegments = parseInt($HeightSegments.val());
+		var depthSegments = parseInt($DepthSegments.val());
 
 		//make the cube
-        var mat =  new THREE.MeshLambertMaterial( { color: 0xffaa00, ambient: 0xffaa00} );
+        var mat =  new THREE.MeshBasicMaterial( { color: 0xffaa00} );
         var mesh = new THREE.Mesh( new THREE.CubeGeometry(width, height, depth, widthSegments, heightSegments, depthSegments), mat );
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
 
         //add it to scene and active objects list
         mesh.position.set( 0, 0, 0 );

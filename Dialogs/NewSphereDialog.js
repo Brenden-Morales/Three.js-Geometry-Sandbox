@@ -29,19 +29,17 @@ function NewSphereDialog(x,y){
 
 	//the create button
 	function createSphereCallback(){
-		var radius = $Radius.val();
-		var widthSegments = $WidthSegments.val();
-		var heightSegments = $HeightSegments.val();
-		var phiStart = $PhiStart.val();
-		var phiLength = $PhiLength.val();
-		var thetaStart = $ThetaStart.val();
-		var thetaLength = $ThetaLength.val();
+		var radius = parseInt($Radius.val());
+		var widthSegments = parseInt($WidthSegments.val());
+		var heightSegments = parseInt($HeightSegments.val());
+		var phiStart = parseFloat($PhiStart.val());
+		var phiLength = parseFloat($PhiLength.val());
+		var thetaStart = parseFloat($ThetaStart.val());
+		var thetaLength = parseFloat($ThetaLength.val());
 
 		//make the sphere
-        var mat =  new THREE.MeshLambertMaterial( { color: 0xffaa00, ambient: 0xffaa00} );
+        var mat =  new THREE.MeshBasicMaterial( { color: 0xffaa00} );
         var mesh = new THREE.Mesh( new THREE.SphereGeometry(radius, widthSegments, heightSegments, phiStart, phiLength, thetaStart, thetaLength), mat );
-        mesh.castShadow = true;
-        //mesh.receiveShadow = true;
 
         //add it to scene and active objects list
         mesh.position.set( 0, 0, 0 );

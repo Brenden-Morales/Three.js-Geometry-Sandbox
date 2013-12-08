@@ -27,17 +27,15 @@ function NewCylinderDialog(x,y){
 
 	//the create button
 	function createCylinderCallback(){
-		var radiusTop = $RadiusTop.val();
-		var radiusBottom = $RadiusBottom.val();
-		var height = $Height.val();
-		var radiusSegments = $RadiusSegments.val();
-		var heightSegments = $HeightSegments.val();
+		var radiusTop = parseInt($RadiusTop.val());
+		var radiusBottom = parseInt($RadiusBottom.val());
+		var height = parseInt($Height.val());
+		var radiusSegments = parseInt($RadiusSegments.val());
+		var heightSegments = parseInt($HeightSegments.val());
 
 		//make the cylinder
-        var mat =  new THREE.MeshLambertMaterial( { color: 0xffaa00, ambient: 0xffaa00} );
+        var mat =  new THREE.MeshBasicMaterial( { color: 0xffaa00} );
         var mesh = new THREE.Mesh( new THREE.CylinderGeometry(radiusTop, radiusBottom, height, radiusSegments, heightSegments, false), mat );
-        mesh.castShadow = true;
-        //mesh.receiveShadow = true;
 
         //add it to scene and active objects list
         mesh.position.set( 0, 0, 0 );

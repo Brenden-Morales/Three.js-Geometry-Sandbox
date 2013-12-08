@@ -38,11 +38,20 @@
 
     <!--My Libs-->
     <script src="Helpers/UIManager.js"></script>
+    <script src="Helpers/KeyManager.js"></script>
+    <script src="Helpers/InputState.js"></script>
     <script src="Helpers/InputManager.js"></script>
-    <script src="Helpers/RTSCamera.js"></script>
-    <script src="Helpers/ObjectGrid.js"></script>
+
     <script src="Helpers/MovementHandle.js"></script>
     <script src="Helpers/RotationHandle.js"></script>
+
+    <script src="Helpers/RTSCamera.js"></script>
+
+    <script src="Helpers/ObjectGrid.js"></script>
+
+    
+
+
     <script src="Dialogs/RightClickDialog.js"></script>
     <script src="Dialogs/NewPlaneDialog.js"></script>
     <script src="Dialogs/NewCubeDialog.js"></script>
@@ -76,15 +85,6 @@
         stats.domElement.style.top = '0px';
         document.body.appendChild( stats.domElement );
 
-        //selecting a renderer to use
-        renderer = new THREE.WebGLRenderer();
-        renderer.sortObjects = false;
-        renderer.shadowMapEnabled = true;
-        renderer.shadowMapSoft = true;
-
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
-
         //setup input
         Input = new InputManager();
 
@@ -94,6 +94,14 @@
 
         //initialize Object Grid
         Grid = new ObjectGrid(scene);
+
+        //selecting a renderer to use
+        renderer = new THREE.WebGLRenderer();
+        renderer.sortObjects = false;
+        renderer.shadowMapEnabled = true;
+        renderer.physicallyBasedShading = true;
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
         
         //set initial camera position
         scene.add(RTS.CameraHolder);
@@ -101,8 +109,8 @@
         RTS.CameraHolder.position.y = 75;
 
         //add a test light
-        var light = new THREE.AmbientLight( 0x404040 ); // soft white light 
-        scene.add( light );
+        //var light = new THREE.AmbientLight( 0x404040 ); // soft white light 
+        //scene.add( light );
 
         //nother test light
         //var light1 = new THREE.PointLight( 0xffffff, 1, 100 ); 
